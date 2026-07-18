@@ -9,13 +9,14 @@ function App() {
   useEffect(() => {
     const fetchSismos = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/sismos');
+        // URL actualizada hacia tu backend en la nube
+        const response = await fetch('https://sismos-backend-production.up.railway.app/api/sismos');
         if (!response.ok) throw new Error('Error al conectar');
         const data = await response.json();
         setSismos(data.features || []);
         setLoading(false);
       } catch (err) {
-        setError('Error al cargar datos. Asegúrate de tener el backend corriendo y el CORS habilitado.');
+        setError('Error al cargar datos. Asegúrate de que el backend esté activo.');
         setLoading(false);
       }
     };
