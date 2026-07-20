@@ -29,23 +29,29 @@ function App() {
   if (loading) return <div className="container"><h2>Cargando sismos...</h2></div>;
   if (error) return <div className="container error">{error}</div>;
 
-  // 2. Filtramos el arreglo antes de imprimirlo
+  // 2. Filtramos el arreglo de forma más robusta
   const sismosFiltrados = sismos.filter((sismo) => {
-    // Verificamos que place exista y lo comparamos en minúsculas
-    return sismo.properties.place 
-      ? sismo.properties.place.toLowerCase().includes(busqueda.toLowerCase())
-      : false;
+    // Aseguramos que place exista
+    if (!sismo.properties.place) return false;
+
+    // 3. Limpiamos y preparamos los datos de forma robusta
+    // Usamos .trim() para quitar espacios extra al inicio/fin, y .toLowerCase() para no importar mayúsculas
+    const placeClean = sismo.properties.place.trim().toLowerCase();
+    const busquedaClean = busqueda.trim().toLowerCase();
+
+    // 4. Hacemos el chequeo defensivo
+    return placeClean.includes(busquedaClean);
   });
 
   return (
     <div className="container">
       <h1>Registro de Sismos</h1>
       
-      {/* 3. Agregamos el input del buscador */}
+      {/* 5. Agregamos el input del buscador */}
       <div style={{ marginBottom: '25px', textAlign: 'center' }}>
         <input 
           type="text" 
-          placeholder="Buscar por estado o ciudad (ej. Chiapas)..." 
+          placeholder="Buscar por estado o ciudad (ej. California)..." 
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           style={{ 
@@ -60,7 +66,7 @@ function App() {
       </div>
 
       <div className="grid">
-        {/* 4. Cambiamos sismos.map por sismosFiltrados.map */}
+        {/* 6. Cambiamos sismos.map por sismosFiltrados.map */}
         {sismosFiltrados.map((sismo) => (
           <div key={sismo.id} className="card">
             <h3>Mag: {sismo.properties.mag}</h3>
